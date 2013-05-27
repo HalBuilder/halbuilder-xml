@@ -28,7 +28,7 @@ import static com.theoryinpractise.halbuilder.impl.api.Support.TITLE;
 import static com.theoryinpractise.halbuilder.impl.api.Support.XSI_NAMESPACE;
 
 
-public class XmlRepresentationWriter<T> implements RepresentationWriter<T> {
+public class XmlRepresentationWriter implements RepresentationWriter<String> {
 
     public void write(ReadableRepresentation representation, Set<URI> flags, Writer writer) {
         final Element element = renderElement("self", representation, false);
