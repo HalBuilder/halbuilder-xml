@@ -68,7 +68,7 @@
                         <configuration>
                             <!--<attached>false</attached>-->
                             <resourceBundles>
-                                <resourceBundle>com.theoryinpractise:halbuilder-test-resources:2.0.2</resourceBundle>
+                                <resourceBundle>com.theoryinpractise:halbuilder-test-resources:2.0.3-SNAPSHOT</resourceBundle>
                             </resourceBundles>
                         </configuration>
                     </execution>

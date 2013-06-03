@@ -48,7 +48,9 @@ public class XmlRepresentationReader implements RepresentationReader {
     private void readNamespaces(Representation resource, Element element) {
         List<Namespace> namespaces = element.getAdditionalNamespaces();
         for (Namespace ns : namespaces) {
-            resource.withNamespace(ns.getPrefix(), ns.getURI());
+            if (!"xsi".equals(ns.getPrefix())) {
+                resource.withNamespace(ns.getPrefix(), ns.getURI());
+            }
         }
     }
 
