@@ -2,17 +2,18 @@ package com.theoryinpractise.halbuilder.xml;
 
 import com.theoryinpractise.halbuilder.api.*;
 import com.theoryinpractise.halbuilder.impl.representations.MutableRepresentation;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.Namespace;
+import org.jdom2.input.SAXBuilder;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
 import static com.theoryinpractise.halbuilder.impl.api.Support.*;
+import static com.theoryinpractise.halbuilder.xml.XmlRepresentationFactory.XSI_NAMESPACE;
 
 public class XmlRepresentationReader implements RepresentationReader {
     private RepresentationFactory representationFactory;

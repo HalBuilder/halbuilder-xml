@@ -3,11 +3,11 @@ package com.theoryinpractise.halbuilder.xml;
 import com.google.common.base.Strings;
 import com.theoryinpractise.halbuilder.api.*;
 import com.theoryinpractise.halbuilder.api.RepresentationWriter;
-import org.jdom.Element;
-import org.jdom.Namespace;
-import org.jdom.Text;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
+import org.jdom2.Text;
+import org.jdom2.output.Format;
+import org.jdom2.output.XMLOutputter;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -25,8 +25,7 @@ import static com.theoryinpractise.halbuilder.impl.api.Support.SELF;
 import static com.theoryinpractise.halbuilder.impl.api.Support.TEMPLATED;
 import static com.theoryinpractise.halbuilder.impl.api.Support.PROFILE;
 import static com.theoryinpractise.halbuilder.impl.api.Support.TITLE;
-import static com.theoryinpractise.halbuilder.impl.api.Support.XSI_NAMESPACE;
-
+import static com.theoryinpractise.halbuilder.xml.XmlRepresentationFactory.XSI_NAMESPACE;
 
 public class XmlRepresentationWriter implements RepresentationWriter<String> {
 
