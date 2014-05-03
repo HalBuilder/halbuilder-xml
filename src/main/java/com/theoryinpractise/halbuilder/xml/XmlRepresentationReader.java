@@ -1,7 +1,11 @@
 package com.theoryinpractise.halbuilder.xml;
 
-import com.theoryinpractise.halbuilder.api.*;
-import com.theoryinpractise.halbuilder.impl.representations.MutableRepresentation;
+import com.theoryinpractise.halbuilder.AbstractRepresentationFactory;
+import com.theoryinpractise.halbuilder.api.ContentRepresentation;
+import com.theoryinpractise.halbuilder.api.Representation;
+import com.theoryinpractise.halbuilder.api.RepresentationException;
+import com.theoryinpractise.halbuilder.api.RepresentationReader;
+import com.theoryinpractise.halbuilder.impl.representations.ContentBasedRepresentation;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -12,21 +16,26 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import static com.theoryinpractise.halbuilder.impl.api.Support.*;
+import static com.theoryinpractise.halbuilder.impl.api.Support.HREF;
+import static com.theoryinpractise.halbuilder.impl.api.Support.HREFLANG;
+import static com.theoryinpractise.halbuilder.impl.api.Support.NAME;
+import static com.theoryinpractise.halbuilder.impl.api.Support.PROFILE;
+import static com.theoryinpractise.halbuilder.impl.api.Support.REL;
+import static com.theoryinpractise.halbuilder.impl.api.Support.TITLE;
 import static com.theoryinpractise.halbuilder.xml.XmlRepresentationFactory.XSI_NAMESPACE;
 
 public class XmlRepresentationReader implements RepresentationReader {
-    private RepresentationFactory representationFactory;
+    private AbstractRepresentationFactory representationFactory;
 
-    public XmlRepresentationReader(RepresentationFactory representationFactory) {
+    public XmlRepresentationReader(AbstractRepresentationFactory representationFactory) {
         this.representationFactory = representationFactory;
     }
 
-    public ReadableRepresentation read(Reader reader) {
+    public ContentRepresentation read(Reader reader) {
         try {
             Document d = new SAXBuilder().build(reader);
             Element root = d.getRootElement();
-            return readRepresentation(root).toImmutableResource();
+            return readRepresentation(root);
         } catch (JDOMException e) {
             throw new RepresentationException(e);
         } catch (IOException e) {
@@ -34,9 +43,9 @@ public class XmlRepresentationReader implements RepresentationReader {
         }
     }
 
-    private MutableRepresentation readRepresentation(Element root) {
+    private ContentRepresentation readRepresentation(Element root) {
         String href = root.getAttributeValue("href");
-        MutableRepresentation resource = new MutableRepresentation(representationFactory, href);
+      ContentBasedRepresentation resource = new ContentBasedRepresentation(representationFactory, href);
 
         readNamespaces(resource, root);
         readLinks(resource, root);
@@ -88,7 +97,7 @@ public class XmlRepresentationReader implements RepresentationReader {
         List<Element> resources = element.getChildren("resource");
         for (Element resource : resources) {
             String rel = resource.getAttributeValue("rel");
-            Representation subResource = readRepresentation(resource);
+            ContentRepresentation subResource = readRepresentation(resource);
             halResource.withRepresentation(rel, subResource);
         }
     }
