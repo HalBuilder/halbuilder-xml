@@ -11,6 +11,7 @@ import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.Namespace;
 import org.jdom2.input.SAXBuilder;
+import org.jdom2.output.XMLOutputter;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -27,8 +28,11 @@ import static com.theoryinpractise.halbuilder.xml.XmlRepresentationFactory.XSI_N
 public class XmlRepresentationReader implements RepresentationReader {
     private AbstractRepresentationFactory representationFactory;
 
+    private XMLOutputter xmlOutputter;
+
     public XmlRepresentationReader(AbstractRepresentationFactory representationFactory) {
         this.representationFactory = representationFactory;
+        this.xmlOutputter = new XMLOutputter();
     }
 
     public ContentRepresentation read(Reader reader) {
@@ -45,7 +49,8 @@ public class XmlRepresentationReader implements RepresentationReader {
 
     private ContentRepresentation readRepresentation(Element root) {
         String href = root.getAttributeValue("href");
-      ContentBasedRepresentation resource = new ContentBasedRepresentation(representationFactory, href);
+
+        ContentBasedRepresentation resource = new ContentBasedRepresentation(representationFactory, xmlOutputter.outputString(root) ,href);
 
         readNamespaces(resource, root);
         readLinks(resource, root);
