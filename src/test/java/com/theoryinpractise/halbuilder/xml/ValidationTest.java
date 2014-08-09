@@ -14,7 +14,7 @@ public class ValidationTest {
 
     RepresentationFactory representationFactory = new XmlRepresentationFactory();
 
-    ReadableRepresentation representation = representationFactory.readRepresentation(
+    ReadableRepresentation representation = representationFactory.readRepresentation(RepresentationFactory.HAL_XML,
             new InputStreamReader(ValidationTest.class.getResourceAsStream("/example.xml")));
 
     @Test

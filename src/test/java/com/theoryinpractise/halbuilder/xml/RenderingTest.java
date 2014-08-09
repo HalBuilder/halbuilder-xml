@@ -1,6 +1,8 @@
 package com.theoryinpractise.halbuilder.xml;
 
+import com.damnhandy.uri.template.MalformedUriTemplateException;
 import com.damnhandy.uri.template.UriTemplate;
+import com.damnhandy.uri.template.VariableExpansionException;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -101,7 +103,7 @@ public class RenderingTest {
 
 
     @Test
-    public void testUriBuilderHal() throws URISyntaxException {
+    public void testUriBuilderHal() throws URISyntaxException, MalformedUriTemplateException, VariableExpansionException {
 
         String path = UriTemplate.fromTemplate(BASE_URL + "customer/{id}").expand(ImmutableMap.<String, Object>of("id", "123456"));
 
@@ -253,7 +255,7 @@ public class RenderingTest {
     }
 
     @Test
-    public void testLinkWithDamnHandyUriTemplate() {
+    public void testLinkWithDamnHandyUriTemplate() throws MalformedUriTemplateException, VariableExpansionException {
 
         Phone phone = new Phone(1234, "phone-123");
 
@@ -270,7 +272,7 @@ public class RenderingTest {
     }
 
     @Test
-    public void testNullPropertyHal() throws URISyntaxException {
+    public void testNullPropertyHal() throws URISyntaxException, MalformedUriTemplateException, VariableExpansionException {
 
         String path = UriTemplate.fromTemplate(BASE_URL + "customer/{id}").expand(ImmutableMap.<String, Object>of("id", "123456"));
 
@@ -288,7 +290,7 @@ public class RenderingTest {
     }
 
     @Test
-    public void testLiteralNullPropertyHal() throws URISyntaxException {
+    public void testLiteralNullPropertyHal() throws URISyntaxException, MalformedUriTemplateException, VariableExpansionException {
         String path = UriTemplate.fromTemplate(BASE_URL + "customer/{id}").expand(ImmutableMap.<String, Object>of("id", "123456"));
 
         ReadableRepresentation party = newBaseResource(new URI(path))
