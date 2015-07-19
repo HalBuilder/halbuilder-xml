@@ -11,9 +11,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.theoryinpractise.halbuilder.api.RepresentationFactory.HAL_JSON;
 import static com.theoryinpractise.halbuilder.api.RepresentationFactory.HAL_XML;
-import static org.fest.assertions.api.Assertions.assertThat;
 
 public class ResourceReaderTest {
 

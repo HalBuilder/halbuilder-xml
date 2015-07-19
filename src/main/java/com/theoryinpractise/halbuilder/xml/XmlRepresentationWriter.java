@@ -1,6 +1,7 @@
 package com.theoryinpractise.halbuilder.xml;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Ordering;
 import com.theoryinpractise.halbuilder.api.*;
 import com.theoryinpractise.halbuilder.api.RepresentationWriter;
 import org.jdom2.Element;
@@ -12,6 +13,7 @@ import org.jdom2.output.XMLOutputter;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,7 +32,7 @@ import static com.theoryinpractise.halbuilder.xml.XmlRepresentationFactory.XSI_N
 public class XmlRepresentationWriter implements RepresentationWriter<String> {
 
     public void write(ReadableRepresentation representation, Set<URI> flags, Writer writer) {
-        final Element element = renderElement("self", representation, false);
+        final Element element = renderElement(flags, "self", representation, false);
         try {
             Format prettyFormat = flags.contains(RepresentationFactory.PRETTY_PRINT)
                     ? Format.getPrettyFormat()
@@ -43,7 +45,7 @@ public class XmlRepresentationWriter implements RepresentationWriter<String> {
         }
     }
 
-    private Element renderElement(String rel, ReadableRepresentation representation, boolean embedded) {
+    private Element renderElement(Set<URI> flags, String rel, ReadableRepresentation representation, boolean embedded) {
 
         final Link resourceLink = representation.getResourceLink();
 
@@ -111,9 +113,27 @@ public class XmlRepresentationWriter implements RepresentationWriter<String> {
         }
 
         // add subresources
-        for (Map.Entry<String, ReadableRepresentation> halResource : representation.getResources()) {
-            Element subResourceElement = renderElement(halResource.getKey(), halResource.getValue(), true);
-            resourceElement.addContent(subResourceElement);
+
+        Map<String, Collection<ReadableRepresentation>> resourceMap = representation.getResourceMap();
+
+        for (Map.Entry<String, Collection<ReadableRepresentation>> resourceEntry : resourceMap.entrySet()) {
+
+            Rel registeredRel = representation.getRels().get(resourceEntry.getKey());
+
+            final boolean sortedRel = registeredRel != null && !registeredRel.isSingleton();
+
+            final Collection<ReadableRepresentation> values = sortedRel
+                                                              ? Ordering.from((registeredRel).comparator()).sortedCopy(resourceEntry.getValue())
+                                                              : resourceEntry.getValue();
+
+            final String collectionRel = sortedRel && !flags.contains(RepresentationFactory.SILENT_SORTING)
+                                         ? resourceEntry.getKey() + " sorted:" + ((Rel.Sorted) registeredRel).id()
+                                         : resourceEntry.getKey();
+
+            for (ReadableRepresentation value : values) {
+                Element subResourceElement = renderElement(flags, collectionRel, value, true);
+                resourceElement.addContent(subResourceElement);
+            }
         }
 
         return resourceElement;

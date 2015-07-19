@@ -10,8 +10,8 @@ import org.testng.annotations.Test;
 
 import java.io.InputStreamReader;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
+import static com.google.common.truth.Truth.assertThat;
+
 
 public class InterfaceSatisfactionTest {
 
@@ -115,13 +115,13 @@ public class InterfaceSatisfactionTest {
         assertThat(representation.toClass(IPerson.class).getName()).isEqualTo("Example Resource");
         try {
             representation.toClass(ISimpleJob.class);
-            fail("RepresentationException expected");
+            throw new AssertionError("RepresentationException expected");
         } catch (RepresentationException e) {
             //
         }
         try {
             representation.toClass(IJob.class);
-            fail("RepresentationException expected");
+            throw new AssertionError("RepresentationException expected");
         } catch (RepresentationException e) {
             //
         }

@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Resources;
 import com.theoryinpractise.halbuilder.api.ReadableRepresentation;
+import com.theoryinpractise.halbuilder.api.Rel;
 import com.theoryinpractise.halbuilder.api.Representable;
 import com.theoryinpractise.halbuilder.api.Representation;
 import com.theoryinpractise.halbuilder.api.RepresentationException;
@@ -20,8 +21,9 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Comparator;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class RenderingTest {
     private static final String ROOT_URL = "https://example.com";
@@ -41,7 +43,7 @@ public class RenderingTest {
     private String exampleWithLiteralNullPropertyXml;
     private String exampleWithMultipleNestedSubresourcesXml;
     private String exampleWithTemplateXml;
-    private String exampleWithArray;
+    private String exampleWithSortedSubresourcesXml;
 
     @BeforeMethod
     public void setup() throws IOException {
@@ -53,6 +55,8 @@ public class RenderingTest {
                 .trim().replaceAll("\n", "\r\n");
         exampleWithSubresourceLinkingToItselfXml = Resources.toString(RenderingTest.class.getResource("/exampleWithSubresourceLinkingToItself.xml"), Charsets.UTF_8)
                 .trim().replaceAll("\n", "\r\n");
+        exampleWithSortedSubresourcesXml = Resources.toString(RenderingTest.class.getResource("/exampleWithSortedSubresources.xml"), Charsets.UTF_8)
+                                                     .trim().replaceAll("\n", "\r\n");
         exampleWithMultipleSubresourcesXml = Resources.toString(RenderingTest.class.getResource("/exampleWithMultipleSubresources.xml"), Charsets.UTF_8)
                 .trim().replaceAll("\n", "\r\n");
         exampleWithNullPropertyXml = Resources.toString(RenderingTest.class.getResource("/exampleWithNullProperty.xml"), Charsets.UTF_8)
@@ -207,6 +211,24 @@ public class RenderingTest {
                         .withProperty("optional", true));
 
         assertThat(party.toString(RepresentationFactory.HAL_XML)).isEqualTo(exampleWithSubresourceXml);
+
+    }
+
+    @Test
+    public void testHalWithSortedSubResources() {
+
+      String href = "customer/123456";
+      ReadableRepresentation party = newBaseResource(href)
+          .withRel(Rel.sorted("ns:user", "id", new Comparator<ReadableRepresentation>() {
+            public int compare(ReadableRepresentation r1, ReadableRepresentation r2) {
+              return r2.getValue("id", 0).compareTo(r1.getValue("id", 0));
+            }
+          }))
+          .withLink("ns:users", BASE_URL + href + "?users")
+          .withBeanBasedRepresentation("ns:user", ROOT_URL + "/user/11", new Customer(11, "Example User", 32))
+          .withBeanBasedRepresentation("ns:user", ROOT_URL + "/user/12", new Customer(12, "Example User", 32));
+
+      assertThat(party.toString(RepresentationFactory.HAL_XML)).isEqualTo(exampleWithSortedSubresourcesXml);
 
     }
 

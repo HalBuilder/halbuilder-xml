@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import java.io.InputStreamReader;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 public class ValidationTest {
 
